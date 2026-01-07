@@ -1,0 +1,49 @@
+---
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.9.0
+    restart: unless-stopped
+    ports:
+     - "9090:9090"
+    volumes:
+      # Montage des volumes pour les données et la configuration
+      - prometheus_data:/prometheus
+      - /home/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      # On précise le fichier de conf et la durée de rétention des données
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=15d'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpu: '0.10'
+          memory: 124M
+      
+  grafana:
+    image: grafana/grafana:12.4.0-20766360996
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    user: "472"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - grafana-conf:/etc/grafana
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+
+# Volume docker où sont stockés les données.
+volumes:
+  prometheus_data:
+  grafana-data:
+  grafana-conf:
