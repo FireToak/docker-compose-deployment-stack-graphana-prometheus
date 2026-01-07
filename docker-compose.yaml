@@ -20,7 +20,7 @@ services:
           cpus: '0.50'
           memory: 1024M
         reservations:
-          cpu: '0.10'
+          cpus: '0.10'
           memory: 124M
       
   grafana:
